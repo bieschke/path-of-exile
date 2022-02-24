@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-__doc__ = """TODO"""
+__doc__ = """Write public stash items to Google Cloud Storage."""
 
 import argparse
 from common import JsonDict
@@ -30,7 +30,7 @@ def store_stash_items(stash: JsonDict) -> int:
 
 
 def store_stashes(change_id: str) -> int:
-    """Return the number of stored items from the given stashes."""
+    """Return the number of stored items from the given change."""
 
     data = get_change(change_id)
 
