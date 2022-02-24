@@ -3,12 +3,12 @@ __doc__ = """Store public stashes in Google Cloud Storage."""
 
 import argparse
 from gcs_logging import log
-from gcs_storage import store_public_stashes
+from gcs_storage import store_change
 import requests
 import time
 
 PUBLIC_STASH_TABS = "https://api.pathofexile.com/public-stash-tabs"
-VERSION = "0"
+VERSION = "1"
 CONTACT = "everyman@gmail.com"
 HEADERS = {
     "User-Agent": f"OAuth bieschke/path-of-exile/{VERSION} (contact: {CONTACT}) StrictMode",
@@ -26,7 +26,7 @@ def public_stashes(change_id: str, retry_after: float):
     response = requests.get(PUBLIC_STASH_TABS, params={"id": change_id}, headers=HEADERS)
 
     if response.status_code in (200, 202):
-        next_change_id, more = store_public_stashes(change_id, response.text)
+        next_change_id, more = store_change(change_id, response.text)
         retry_after = more and 0.0 or UP2DATE_DELAY
         return public_stashes(next_change_id, retry_after)
 

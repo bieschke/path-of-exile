@@ -4,7 +4,8 @@ __doc__ = """TODO"""
 import argparse
 from common import JsonDict
 from gcs_logging import log
-from gcs_storage import get_public_stashes
+from gcs_storage import get_change, store_stash
+import io
 import jsonlines
 
 
@@ -14,24 +15,28 @@ def store_stash_items(stash: JsonDict) -> int:
     stash_id: str = stash["id"]
 
     count = 0
-    with jsonlines.open(f"{stash_id}.jsonl", mode="w") as writer:
-        for count, item in enumerate(stash.pop("items", []), start=1):
+    fp = io.BytesIO()
+    with jsonlines.Writer(fp) as writer:
+        items = stash.pop("items", [])
+        for count, item in enumerate(items, start=1):
             stash_columns = {f"stash.{k}": v for k, v in stash.items()}
             item_columns = {f"item.{k}": v for k, v in item.items()}
-            writer.write(stash_columns.update(item_columns)) # can use | in Python >=3.9
+            all_columns = {**stash_columns, **item_columns} # use | in Python >=3.9
+            writer.write(all_columns)
+    store_stash(stash_id, fp)
 
-    if count > 0:
-        log(f"store_stash_items({stash_id}) -> {count}")
+    #log(f"store_stash_items({stash_id}) -> {count}")
     return count
 
 
 def store_stashes(change_id: str) -> int:
     """Return the number of stored items from the given stashes."""
 
-    data = get_public_stashes(change_id)
+    data = get_change(change_id)
 
     count = 0
     for stash in data.get("stashes", []):
+        #print(f"stash={stash}")
         count += store_stash_items(stash)
 
     log(f"store_stashes({change_id}) -> {count}")
