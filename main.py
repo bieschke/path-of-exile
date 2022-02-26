@@ -1,6 +1,16 @@
 __doc__ = """Google Cloud Function main() entrypoints."""
 
-from write_stash_items import store_stashes
+import gcs_storage
+from public_stashes import public_stashes
+from store_stashes import store_stashes
+
+
+def every_5_minutes(event, context):
+    """Event fired every five minutes through Google Cloud Scheduler."""
+    change_id = gcs_storage.get_next_change_id()
+    next_change_id = public_stashes(change_id, 0.0)
+    gcs_storage.set_next_change_id(next_change_id)
+    log(f"next change {next_change_id}")
 
 
 def public_stashes_finalize(event, context):
