@@ -60,8 +60,23 @@ def store_stashes(change_id: str) -> int:
         #print(f"stash={stash}")
         count += store_stash_items(stash)
 
-    log(f"store_stashes({change_id}) -> {count}")
     return count
+
+
+def public_stashes_finalize(event, context):
+    """Triggered by a finalize to a Cloud Storage bucket.
+    Finalizes occur every time a file is created/overwritten.
+
+    Args:
+         event (dict): Event payload.
+         context (google.cloud.functions.Context): Metadata for the event.
+    """
+    file = event
+    print(f"Processing file: {file['name']}.")
+
+    change_id = event["name"].removesuffix(".json")
+    count = store_stashes(change_id)
+    log(f"store_stashes({change_id}) -> {count}")
 
 
 if __name__ == "__main__":
