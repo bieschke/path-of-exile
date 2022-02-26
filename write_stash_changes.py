@@ -9,7 +9,7 @@ import time
 from typing import Optional
 
 PUBLIC_STASH_TABS = "https://api.pathofexile.com/public-stash-tabs"
-VERSION = "1"
+VERSION = "2"
 CONTACT = "everyman@gmail.com"
 HEADERS = {
     "User-Agent": f"OAuth bieschke/path-of-exile/{VERSION} (contact: {CONTACT}) StrictMode",

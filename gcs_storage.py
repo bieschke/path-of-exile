@@ -5,7 +5,8 @@ import io
 import json
 from typing import Tuple
 
-BUCKET = "path-of-exile-public-stashes"
+CHANGE_BUCKET = "path-of-exile-public-stashes-by-change"
+STASH_BUCKET = "path-of-exile-public-stashes-by-stash"
 
 
 def store_change(change_id: str, data: str) -> Tuple[str, bool]:
@@ -15,7 +16,7 @@ def store_change(change_id: str, data: str) -> Tuple[str, bool]:
     there are more stashes currently available.
     """
     storage_client = storage.Client()
-    bucket = storage_client.bucket(BUCKET)
+    bucket = storage_client.bucket(CHANGE_BUCKET)
     blob = bucket.blob(f"change/{change_id}.json")
     blob.upload_from_string(data, content_type="application/json")
     log(blob.public_url)
@@ -26,8 +27,8 @@ def store_change(change_id: str, data: str) -> Tuple[str, bool]:
 def get_change(change_id: str) -> JsonDict:
     """Return the JSON for the given change."""
     storage_client = storage.Client()
-    bucket = storage_client.bucket(BUCKET)
-    blob = bucket.blob(f"change/{change_id}.json")
+    bucket = storage_client.bucket(CHANGE_BUCKET)
+    blob = bucket.blob(f"{change_id}.json")
     data = blob.download_as_text()
     return json.loads(data)
 
@@ -35,8 +36,8 @@ def get_change(change_id: str) -> JsonDict:
 def store_stash(stash_id: str, fp: io.BytesIO) -> str:
     """Return the public URL of the stash as JSONL."""
     storage_client = storage.Client()
-    bucket = storage_client.bucket(BUCKET)
-    blob = bucket.blob(f"stash/{stash_id}.jsonl")
+    bucket = storage_client.bucket(STASH_BUCKET)
+    blob = bucket.blob(f"{stash_id}.jsonl")
     fp.seek(0)
     blob.upload_from_file(fp, content_type="application/jsonlines")
     log(blob.public_url)
