@@ -1,5 +1,6 @@
 from common import JsonDict
 from gcs_logging import log
+from google.cloud import exceptions
 from google.cloud import storage
 import io
 import json
@@ -15,10 +16,13 @@ storage_client = storage.Client()
 def get_next_change_id() -> Optional[str]:
     """Return the next change id.
 
-    None is returned if the previous value isn't there."""
+    None is returned if the value isn't there."""
     bucket = storage_client.bucket(CHANGE_BUCKET)
     blob = bucket.blob(NEXT_CHANGE_ID)
-    return blob.download_as_text() or None
+    try:
+        return blob.download_as_text()
+    except exceptions.NotFound:
+        return None
 
 
 def set_next_change_id(change_id: str) -> str:
