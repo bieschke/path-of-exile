@@ -7,6 +7,7 @@ from typing import Optional, Tuple
 
 CHANGE_BUCKET = "path-of-exile-public-stashes-by-change"
 STASH_BUCKET = "path-of-exile-public-stashes-by-stash"
+NEXT_CHANGE_ID = "NEXT_CHANGE_ID"
 
 storage_client = storage.Client()
 
