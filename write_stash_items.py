@@ -9,6 +9,26 @@ import io
 import jsonlines
 
 
+def format_for_bigquery(item: dict) -> dict:
+    """Return the given item formatted for BigQuery.
+
+    This function removes columns that we haven't translated
+    for BigQuery to understand. BigQuery blows up on nested
+    arrays for example when using auto schema generation.
+    """
+    skip = (
+        "item_additionalProperties",
+        "item_hybrid",
+        "item_nextLevelRequirements",
+        "item_notableProperties",
+        "item_properties",
+        "item_requirements",
+        "item_socketedItems",
+        "item_ultimatumMods",
+    )
+    return { k:v for k,v in item.items() if k not in (skip) }
+
+
 def store_stash_items(stash: JsonDict) -> int:
     """Return the number of stored items from the given stash."""
 
@@ -19,11 +39,12 @@ def store_stash_items(stash: JsonDict) -> int:
     with jsonlines.Writer(fp) as writer:
         items = stash.pop("items", [])
         for count, item in enumerate(items, start=1):
-            stash_columns = {f"stash.{k}": v for k, v in stash.items()}
-            item_columns = {f"item.{k}": v for k, v in item.items()}
+            stash_columns = {f"stash_{k}": v for k, v in stash.items()}
+            item_columns = {f"item_{k}": v for k, v in item.items()}
             all_columns = {**stash_columns, **item_columns} # use | in Python >=3.9
-            writer.write(all_columns)
-    store_stash(stash_id, fp)
+            writer.write(format_for_bigquery(all_columns))
+    if count:
+        store_stash(stash_id, fp)
 
     #log(f"store_stash_items({stash_id}) -> {count}")
     return count
