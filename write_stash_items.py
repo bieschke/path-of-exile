@@ -71,10 +71,8 @@ def public_stashes_finalize(event, context):
          event (dict): Event payload.
          context (google.cloud.functions.Context): Metadata for the event.
     """
-    file = event
-    print(f"Processing file: {file['name']}.")
-
-    change_id = event["name"].removesuffix(".json")
+    filename = event["name"]
+    change_id = filename.removesuffix(".json")
     count = store_stashes(change_id)
     log(f"store_stashes({change_id}) -> {count}")
 
