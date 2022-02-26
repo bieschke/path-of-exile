@@ -7,7 +7,6 @@ from gcs_storage import store_change
 import requests
 import time
 from typing import Optional
-from write_stash_items import store_stashes
 
 PUBLIC_STASH_TABS = "https://api.pathofexile.com/public-stash-tabs"
 VERSION = "1"
@@ -34,7 +33,6 @@ def public_stashes(change_id: Optional[str], retry_after: float):
 
     if response.status_code in (200, 202):
         next_change_id, more = store_change(change_id, response.text)
-        store_stashes(change_id)
         retry_after = not more and UP2DATE_DELAY or 0.0
         return public_stashes(next_change_id, retry_after)
 
