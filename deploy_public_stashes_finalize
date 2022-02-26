@@ -1,0 +1,2 @@
+#!/bin/sh
+exec gcloud functions deploy public_stashes_finalize --runtime python39 --trigger-resource path-of-exile-public-stashes --trigger-event google.storage.object.finalize
