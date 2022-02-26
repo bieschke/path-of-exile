@@ -1,0 +1,2 @@
+#!/bin/sh
+exec gcloud functions deploy path_of_exile_subscribe --trigger-topic every-5-min --runtime python39

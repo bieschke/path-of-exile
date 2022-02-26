@@ -5,8 +5,9 @@ from public_stashes import public_stashes
 from store_stashes import store_stashes
 
 
-def every_5_minutes(event, context):
-    """Event fired every five minutes through Google Cloud Scheduler."""
+def path_of_exile_subscribe(event, context):
+    """Event fired periodically through Scheduler and Pub/Sub to
+    retrieve data from the Path of Exile API."""
     change_id = gcs_storage.get_next_change_id()
     next_change_id = public_stashes(change_id, 0.0)
     gcs_storage.set_next_change_id(next_change_id)
