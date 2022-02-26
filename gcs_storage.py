@@ -29,7 +29,7 @@ def set_next_change_id(change_id: str) -> str:
     return blob.public_url
 
 
-def store_change(change_id: str = "START", data: str) -> Tuple[str, bool]:
+def store_change(change_id: str, data: str) -> Tuple[str, bool]:
     """Store the JSON for the given change.
 
     Return the next change id and a boolean indicating whether or not

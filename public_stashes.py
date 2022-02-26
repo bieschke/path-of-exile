@@ -29,7 +29,7 @@ def public_stashes(change_id: Optional[str], retry_after: float) -> str:
     retry_after = float(response.headers.get("Retry-After", 0.0))
 
     if response.status_code in (200, 202):
-        next_change_id, more = gcs_storage.store_change(change_id, response.text)
+        next_change_id, more = gcs_storage.store_change(change_id or "START", response.text)
         if not more:
             log(f"stashes @ change {change_id}")
             return next_change_id # success! we're caught up
