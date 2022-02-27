@@ -1,0 +1,9 @@
+#!/bin/sh
+exec bq mk \
+    --transfer_config \
+    --display_name='Items Transfer' \
+    --data_source=google_cloud_storage \
+    --target_dataset='path_of_exile_public_stashes' \
+    --params='{"data_path_template":"gs://path-of-exile-public-stashes-by-stash/*.jsonl",
+        "destination_table_name_template":"items",
+        "file_format":"JSON"}'

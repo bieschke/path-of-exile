@@ -1,2 +1,0 @@
-#!/bin/sh
-exec bq load --source_format=NEWLINE_DELIMITED_JSON path_of_exile_public_stashes.items 'gs://path-of-exile-public-stashes-by-stash/*.jsonl'
