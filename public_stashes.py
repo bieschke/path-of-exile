@@ -3,6 +3,7 @@ __doc__ = """Write public stash changes to Google Cloud Storage."""
 
 import argparse
 from gcs_logging import log
+import gcs_storage
 import requests
 import time
 from typing import Optional
