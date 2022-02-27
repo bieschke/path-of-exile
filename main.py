@@ -1,5 +1,6 @@
 __doc__ = """Google Cloud Function main() entrypoints."""
 
+from gcs_logging import log
 import gcs_storage
 from public_stashes import public_stashes
 from store_stashes import store_stashes
